@@ -2,59 +2,45 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ARG    1
-#define NO_ARG 0
+#define NUM    2
 
 typedef struct {
 	char cmd;			//命令参数
-	int hasArg;			//带参数码
-	void (*func)(int, int);		//调用例程
+	void (*func)(int);		//调用例程
 }Command;
 
 Command *findCommand(const Command cmds[], int n, int cmd);
-void turtle();
-int getArg(const char *buff, int *result);
-void doSelectPen(int, int);
-void doPenUp(int, int);
-void doPenDown(int, int);
-void doPenDir(int, int);
+void turtle(const Command cmds[]);
+void doPenDir(int);
 char * s_gets(char *st, int n);
 
-static Command cmds[] = { 
-                { 'P', ARG,    doSelectPen },
-                { 'U', NO_ARG, doPenUp },
-                { 'D', NO_ARG, doPenDown },
-                { 'N', ARG,    doPenDir },
-                { 'E', ARG,    doPenDir },
-                { 'S', ARG,    doPenDir },
-                { 'W', ARG,    doPenDir }
-        };  
-
 int main(){
-
-	turtle();
+	static Command cmds[] = { 
+                { 'w', doPenDir },
+                { 'a', doPenDir },
+                { 'd', doPenDir },
+                { 's', doPenDir }
+        };  
+	
+	turtle(cmds);
 	
 	return 0;
 }
 
 //主程序，读取一行，查找命令，获取参数，然后调用处理函数
-void turtle(){
-	int num = 4;
-	char cmd_[num];
-	while (s_gets(cmd_, num) != NULL){ 
-	
-                Command *cmd = findCommand(cmds, 7, *cmd_);
+void turtle(const Command cmds[]){
+	char cmd_[NUM];
+	while (s_gets(cmd_, NUM) != NULL){ 
+	        int count = 0;
+                Command *cmd = findCommand(cmds, 4, *cmd_);
 
                 if(cmd) {
-                        int arg = 0;
-			if (cmd->hasArg && !getArg(cmd_ + 1, &arg)){
-				fprintf(stderr, "'%c' needs an argument\n", cmd_[0]);
-				continue;
-			}
-			cmd->func(cmd_[0], arg);	
+			cmd->func(cmd_[0]);	
+			if (count %7)
+				puts("");
                 }
 		else
-			puts("Please enter P U D N E S or W, and needs an argument. ");   
+			puts("Please enter w a d or s. ");   
         }
 }
 
@@ -64,7 +50,7 @@ Command *findCommand(const Command cmds[], int n, int cmd){
 	Command *p = (Command *)cmds;
 
 	for (i=0;i<n;i++){
-		if (cmds[i].cmd == cmd)
+		if (cmds[i].cmd == cmd || cmds[i].cmd == cmd + 32)
 			return p + i;
 	}
 
@@ -72,25 +58,10 @@ Command *findCommand(const Command cmds[], int n, int cmd){
 	return 0;
 }
 
-//读取数值参数
-int getArg(const char *buff, int *result){
-	return sscanf(buff, "%d", result) == 1;
-}
 
-void doSelectPen(int d, int s){
-	puts("pen");
-}
 
-void doPenUp(int d, int n){
-	puts("pen up");
-}
-
-void doPenDown(int d, int n){
-	puts("pen down");
-}
-
-void doPenDir(int d, int n){
-	printf("%c %d\n",d,n);
+void doPenDir(int d){
+	printf("%c\n",d);
 }
 
 char * s_gets(char *st, int n){ 
