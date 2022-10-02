@@ -14,18 +14,6 @@ void turtle(const Command cmds[]);
 void doPenDir(int);
 char * s_gets(char *st, int n);
 
-int main(){
-	static Command cmds[] = { 
-                { 'w', doPenDir },
-                { 'a', doPenDir },
-                { 'd', doPenDir },
-                { 's', doPenDir }
-        };  
-	
-	turtle(cmds);
-	
-	return 0;
-}
 
 //主程序，读取一行，查找命令，获取参数，然后调用处理函数
 void turtle(const Command cmds[]){
@@ -79,3 +67,7 @@ char * s_gets(char *st, int n){
         }   
 	return ret_val;
 }      
+
+char * s_getchar(char *st){
+	
+}
